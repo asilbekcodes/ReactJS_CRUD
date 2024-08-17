@@ -1,50 +1,34 @@
 {
-    "users": [
-      {
-        "id": 1,
-        "name": "Jonh",
-        "surname": "Doe",
-        "email": "jonh@gmail.com",
-        "phone": "+1111 511 11 11 11",
-        "age": 25,
-        "address": "New York"
-
-      },
-      {
-        "id": 2,
-        "name": "Anna",
-        "surname": "Smith",
-        "email": "anna@gmail.com",
-        "phone": "+7777 977 77 77 77",
-        "age": 30,
-        "address": "Los Angeles"
-      },
-      {
-        "id": 3,
-        "name": "Alex",
-        "surname": "Brown",
-        "email": "alex@gmail.com",
-        "phone": "+9999 599 99 99 99",
-        "age": 35,
-        "address": "Chicago"
-      },
-      {
-        "id": 4,
-        "name": "Sarah",
-        "surname": "Davis",
-        "email": "sarah@gmail.com",
-        "phone": "+2222 722 22 22 22",
-        "age": 40,
-        "address": "Houston"
-      },
-      {
-        "id": 5,
-        "name": "Mike",
-        "surname": "Wilson",
-        "email": "mike@gmail.com",
-        "phone": "+5555 655 55 55 55",
-        "age": 45,
-        "address": "Miami"
-      }
-    ]
-  }
+  "users": [
+    {
+      "id": "1",
+      "name": "Jonh",
+      "email": "jonh@gmail.com",
+      "phone": "+1111 511 11 11 11"
+    },
+    {
+      "id": "2",
+      "name": "Anna",
+      "email": "anna@gmail.com",
+      "phone": "+7777 977 77 77 77"
+    },
+    {
+      "id": "3",
+      "name": "Alex",
+      "email": "alex@gmail.com",
+      "phone": "+9999 599 99 99 99"
+    },
+    {
+      "id": "4",
+      "name": "Sarah",
+      "email": "sarah@gmail.com",
+      "phone": "+2222 722 22 22 22"
+    },
+    {
+      "id": "5",
+      "name": "Mike",
+      "email": "mike@gmail.com",
+      "phone": "+3333 933 33 33 33"
+    }
+  ]
+}

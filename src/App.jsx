@@ -1,59 +1,69 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-
 function App() {
-  // jsondan malumot olib kelish
   const [data, setData] = useState([])
-  useEffect(() => {
-    fetch('http://localhost:3030/users')
-    .then(response => response.json())
-    .then(res => setData(res))
-  },[])
-  console.log(data);
-  
+  const [info, setInfo] = useState([])
   // modal ochilib yopilishi
   const [addModal, setAddModal] = useState(false)
   const openAddModal = () => setAddModal(!addModal)
-
   // info modal ochilib yopilishi
   const [infoModal, setInfoModal] = useState(false)
   const openInfoModal = () => setInfoModal(!infoModal)
   const [itemModal, setItemModal] = useState(null)
-
   // user qushish
   const [userName, setUserName] =useState('')
   const [ userEmail, setUserEmail] =useState('')
-  const [userSurname, setUserSurname] = useState('')
   const [userPhone, setUserPhone] = useState('')
-  const [userAge, setUserAge] = useState('')
-  const [userAddress, setUserAddress] = useState('')
-
-  const addUseers = () =>{
-    const newUsers = {
-      "id": data.length + 1,
-      "name": userName,
-      "surname": userSurname,
-      "email": userEmail,
-      "phone": userPhone,
-      "age": userAge,
-      "address": userAddress
-    }
-    data.push(newUsers)
-    openAddModal()
-  }
-
-  // delete users
-  const deleteUser = (id) =>{
-    let arr = data.filter(item => item.id !== id)
-    console.log(arr);
-    setData([...arr])
-
-  }
-
   // edit modal ochilib yopilishi
   const [editModal, setEditModal] = useState(false)
   const openEditModal = () => setEditModal(!editModal)
-  
-  
+  // jsondan malumot olib kelish
+  useEffect(() => {
+    // fetch('http://localhost:3030/users')
+    // .then(response => response.json())
+    // .then(res => setData(res))
+    axios.get('http://localhost:3030/users')
+    .then(res =>  setData(res.data))
+    .catch(error => console.log(error)) 
+  },[])
+  useEffect(() => {
+    setInfo(data)
+  }, [data])
+  const addUseers = () =>{
+    const newUsers = {
+      "id": data.length + "1",
+      "name": userName,
+      "email": userEmail,
+      "phone": userPhone,
+    }
+    axios.post('http://localhost:3030/users', newUsers)
+    .then(res => {
+      console.log(res)
+      getInfo()
+    })
+    .catch(error => console.log(error))
+    // data.push(newUsers)
+    openAddModal()
+  }
+  function getInfo() {
+    axios.get('http://localhost:3030/users')
+    .then(res => setInfo(res.data))
+    .catch(error => console.log(error))
+  }
+  // delete users
+  // const deleteUser = (id) =>{
+  //   let arr = data.filter(item => item.id !== id)
+  //   console.log(arr);
+  //   setData([...arr])
+  // }
+  const deleteUser = (id) => {
+    axios.delete(`http://localhost:3030/users/${id}`)
+    .then(res => {
+      console.log(res)
+      getInfo()
+    })
+    .catch(error => console.log(error))
+  }
   return (
     <div>
       <button onClick={openAddModal} className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-5'>Add +</button>
@@ -77,7 +87,7 @@ function App() {
           </thead>
           <tbody>
             {
-              data && data.map((item, index) =>
+              info && info.map((item, index) =>
                 <tr key={index} className=" text-gray-300 bg-gray-800 border-b border-gray-700">
                   <th scope="row" className="px-6 py-4 font-medium  whitespace-nowrap ">
                     {item.name}
@@ -116,34 +126,18 @@ function App() {
                       </button>
                   </div>
                   <div class="p-4 md:p-5">
-                      <div class="space-y-4 grid grid-cols-2 gap-2" action="#">
+                      <div class="space-y-4" action="#">
                           <div>
                               <label for="name" class="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
                               <input onChange={(e)=> setUserName(e.target.value)} type="name" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name" required />
-                          </div>
-                          <div>
-                              <label for="surname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your surname</label>
-                              <input onChange={(e)=> setUserSurname(e.target.value)} type="name" name="surname" id="surname" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="surname" required />
                           </div>
                           <div>
                               <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
                               <input onChange={(e)=> setUserEmail(e.target.value)} type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required />
                           </div>
                           <div>
-                              <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-                              <input onChange={(e)=> setUserPassword(e.target.value)} type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                          </div>
-                          <div>
                               <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your phone</label>
                               <input onChange={(e)=> setUserPhone(e.target.value)} type="phone" name="phone" id="phone" placeholder="+7 (999) 999-99-99" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                          </div>
-                          <div>
-                              <label for="age" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your age</label>
-                              <input onChange={(e)=> setUserAge(e.target.value)} type="number" name="age" id="age" placeholder="age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                          </div>
-                          <div>
-                              <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your address</label>
-                              <input onChange={(e)=> setUserAddress(e.target.value)} type="text" name="address" id="address" placeholder="address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                           </div>
                           <div>
                             <button type="submit" onClick={addUseers} class="mt-7 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">submit</button>
@@ -174,11 +168,11 @@ function App() {
                 </div>
                 <div class="p-4 md:p-5 space-y-4">
                   <p>name: {itemModal.name}</p>
-                  <p>surname: {itemModal.surname}</p>
+                  {/* <p>surname: {itemModal.surname}</p> */}
                   <p>email: {itemModal.email}</p>
                   <p>phone: {itemModal.phone}</p>
-                  <p>address: {itemModal.address}</p>
-                  <p>age: {itemModal.age}</p>
+                  {/* <p>address: {itemModal.address}</p> */}
+                  {/* <p>age: {itemModal.age}</p> */}
                 </div>
             </div>
         </div>
@@ -202,34 +196,18 @@ function App() {
                         </button>
                     </div>
                     <div class="p-4 md:p-5">
-                        <div class="space-y-4 grid grid-cols-2 gap-2" action="#">
+                        <div class="space-y-4" action="#">
                             <div>
                                 <label for="name" class="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
                                 <input  onChange={(e) => setUserName(e.target.value)} type="name" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name" required />
-                            </div>
-                            <div>
-                                <label for="surname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your surname</label>
-                                <input  onChange={(e) => setUserName(e.target.value)} type="name" name="surname" id="surname" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="surname" required />
                             </div>
                             <div>
                                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
                                 <input  onChange={(e) => setUserName(e.target.value)} type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required />
                             </div>
                             <div>
-                                <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-                                <input onChange={(e) => setUserName(e.target.value)} type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                            </div>
-                            <div>
                                 <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your phone</label>
                                 <input onChange={(e) => setUserName(e.target.value)} type="phone" name="phone" id="phone" placeholder="+7 (999) 999-99-99" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                            </div>
-                            <div>
-                                <label for="age" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your age</label>
-                                <input  onChange={(e) => setUserName(e.target.value)} type="number" name="age" id="age" placeholder="age" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                            </div>
-                            <div>
-                                <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your address</label>
-                                <input  onChange={(e) => setUserName(e.target.value)} type="text" name="address" id="address" placeholder="address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                             </div>
                             <div>
                               <button  type="submit" class="mt-7 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">submit</button>
