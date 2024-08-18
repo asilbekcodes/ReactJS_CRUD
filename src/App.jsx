@@ -118,8 +118,7 @@ const editUser = () => {
                   <button onClick={()=> deleteUser(item.id)} type="button" className=" text-white mt-2 bg-red-700 hover:bg-red-800  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                 </tr>
               )
-            }
-            
+            }     
           </tbody>
         </table>
       </div>
@@ -164,7 +163,6 @@ const editUser = () => {
         </div> 
       }
 
-
       {/* info modal */}
       { infoModal &&
         <div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -183,11 +181,8 @@ const editUser = () => {
                 </div>
                 <div class="p-4 md:p-5 space-y-4">
                   <p>name: {itemModal.name}</p>
-                  {/* <p>surname: {itemModal.surname}</p> */}
                   <p>email: {itemModal.email}</p>
                   <p>phone: {itemModal.phone}</p>
-                  {/* <p>address: {itemModal.address}</p> */}
-                  {/* <p>age: {itemModal.age}</p> */}
                 </div>
             </div>
         </div>
@@ -233,14 +228,7 @@ const editUser = () => {
             </div>
         </div> 
       }
-
     </div>
   )
 }
-
 export default App
-
-
-
-
-
