@@ -16,12 +16,10 @@ function App() {
   const [userPhone, setUserPhone] = useState('')
   // edit modal ochilib yopilishi
   const [editModal, setEditModal] = useState(false)
-  const openEditModal = () => setEditModal(!editModal)
+  // const openEditModal = () => setEditModal(!editModal)
+  const [editData, setEditData] = useState(null)
   // jsondan malumot olib kelish
   useEffect(() => {
-    // fetch('http://localhost:3030/users')
-    // .then(response => response.json())
-    // .then(res => setData(res))
     axios.get('http://localhost:3030/users')
     .then(res =>  setData(res.data))
     .catch(error => console.log(error)) 
@@ -29,7 +27,8 @@ function App() {
   useEffect(() => {
     setInfo(data)
   }, [data])
-  const addUseers = () =>{
+  // user add
+  const addUsers = () =>{
     const newUsers = {
       "id": data.length + "1",
       "name": userName,
@@ -42,7 +41,6 @@ function App() {
       getInfo()
     })
     .catch(error => console.log(error))
-    // data.push(newUsers)
     openAddModal()
   }
   function getInfo() {
@@ -51,11 +49,6 @@ function App() {
     .catch(error => console.log(error))
   }
   // delete users
-  // const deleteUser = (id) =>{
-  //   let arr = data.filter(item => item.id !== id)
-  //   console.log(arr);
-  //   setData([...arr])
-  // }
   const deleteUser = (id) => {
     axios.delete(`http://localhost:3030/users/${id}`)
     .then(res => {
@@ -64,6 +57,28 @@ function App() {
     })
     .catch(error => console.log(error))
   }
+  // edit users
+  const openEditModals = (user) => {
+    setEditData(user);
+    setUserName(user.name);
+    setUserEmail(user.email);
+    setUserPhone(user.phone);
+    setEditModal(!editModal);
+  };
+const editUser = () => {
+  const updatedUser = {
+    ...editData,
+    name: userName,
+    email: userEmail,
+    phone: userPhone,
+  };
+  axios.put(`http://localhost:3030/users/${editData.id}`, updatedUser)
+  .then(res => {
+    getInfo();
+    setEditModal();
+  })
+  .catch(error => console.log(error));
+};
   return (
     <div>
       <button onClick={openAddModal} className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-5'>Add +</button>
@@ -99,7 +114,7 @@ function App() {
                     {item.phone}
                   </td>
                   <button onClick={()=>{openInfoModal(), setItemModal(item)}} type="button" className="text-white mt-2 bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Info</button>
-                  <button onClick={() => openEditModal()} type="button" className=" text-white mt-2 bg-yellow-400 hover:bg-yellow-500  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">Edit</button>
+                  <button onClick={() => openEditModals(item)} type="button" className=" text-white mt-2 bg-yellow-400 hover:bg-yellow-500  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">Edit</button>
                   <button onClick={()=> deleteUser(item.id)} type="button" className=" text-white mt-2 bg-red-700 hover:bg-red-800  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                 </tr>
               )
@@ -140,7 +155,7 @@ function App() {
                               <input onChange={(e)=> setUserPhone(e.target.value)} type="phone" name="phone" id="phone" placeholder="+7 (999) 999-99-99" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                           </div>
                           <div>
-                            <button type="submit" onClick={addUseers} class="mt-7 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">submit</button>
+                            <button type="submit" onClick={addUsers} class="mt-7 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">submit</button>
                           </div>
                       </div>
                   </div>
@@ -188,7 +203,7 @@ function App() {
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                             Sign in to our platform
                         </h3>
-                        <button onClick={openEditModal} type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="authentication-modal">
+                        <button onClick={openEditModals} type="button" class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="authentication-modal">
                             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                             </svg>
@@ -199,18 +214,18 @@ function App() {
                         <div class="space-y-4" action="#">
                             <div>
                                 <label for="name" class="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
-                                <input  onChange={(e) => setUserName(e.target.value)} type="name" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name" required />
+                                <input onChange={(e)=> setUserName(e.target.value)} value={userName} type="name" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name" required />
                             </div>
                             <div>
                                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                                <input  onChange={(e) => setUserName(e.target.value)} type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required />
+                                <input onChange={(e)=> setUserEmail(e.target.value)} value={userEmail} type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required />
                             </div>
                             <div>
                                 <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your phone</label>
-                                <input onChange={(e) => setUserName(e.target.value)} type="phone" name="phone" id="phone" placeholder="+7 (999) 999-99-99" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+                                <input onChange={(e)=> setUserPhone(e.target.value)} value={userPhone} type="phone" name="phone" id="phone" placeholder="+7 (999) 999-99-99" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
                             </div>
                             <div>
-                              <button  type="submit" class="mt-7 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">submit</button>
+                              <button onClick={editUser} type="submit" class="mt-7 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">submit</button>
                             </div>
                         </div>
                     </div>
