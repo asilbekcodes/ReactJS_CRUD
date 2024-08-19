@@ -30,7 +30,7 @@ function App() {
   // user add
   const addUsers = () =>{
     const newUsers = {
-      "id": data.length + "1",
+      "id": data.length + 1,
       "name": userName,
       "email": userEmail,
       "phone": userPhone,
