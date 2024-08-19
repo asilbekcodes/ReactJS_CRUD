@@ -180,9 +180,9 @@ const editUser = () => {
                     </button>
                 </div>
                 <div class="p-4 md:p-5 space-y-4">
-                  <p>name: {itemModal.name}</p>
-                  <p>email: {itemModal.email}</p>
-                  <p>phone: {itemModal.phone}</p>
+                  <p><b>Name:</b> {itemModal.name}</p>
+                  <p><b>Email:</b> {itemModal.email}</p>
+                  <p><b>Phone:</b> {itemModal.phone}</p>
                 </div>
             </div>
         </div>
